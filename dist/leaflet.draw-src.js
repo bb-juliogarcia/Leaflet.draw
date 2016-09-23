@@ -2815,12 +2815,15 @@ L.Toolbar = L.Class.extend({
 	},
 
 	_createButton: function (options) {
-
-		var link = L.DomUtil.create('a', options.className || '', options.container);
+		var link = L.DomUtil.create('a', !options.glyphicon && (options.className || '', options.container));
 		link.href = '#';
 
 		if (options.text) {
 			link.innerHTML = options.text;
+		}
+
+		if (options.glyphicon) {
+			link.innerHTML = '<i class="glyphicon"'  + options.glyphicon + '"/>';
 		}
 
 		if (options.title) {
