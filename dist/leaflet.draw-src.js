@@ -2823,7 +2823,7 @@ L.Toolbar = L.Class.extend({
 		}
 
 		if (options.glyphicon) {
-			link.innerHTML = L.DomUtil.create('i', 'glyphicon ' + options.glyphicon);
+			link.innerHTML = L.DomUtil.create('span', 'glyphicon ' + options.glyphicon);
 		}
 
 		if (options.title) {
