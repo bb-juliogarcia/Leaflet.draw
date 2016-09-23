@@ -26,7 +26,8 @@ L.drawLocal = {
 				polygon: 'Draw a polygon',
 				rectangle: 'Draw a rectangle',
 				circle: 'Draw a circle',
-				marker: 'Draw a marker'
+				marker: 'Draw a marker',
+				hyperlink: 'Create a hyperlink'
 			}
 		},
 		handlers: {
@@ -59,6 +60,11 @@ L.drawLocal = {
 			rectangle: {
 				tooltip: {
 					start: 'Click and drag to draw rectangle.'
+				}
+			},
+			hyperlink: {
+				tooltip: {
+					start: 'Click and drag to create hyperlink.'
 				}
 			},
 			simpleshape: {

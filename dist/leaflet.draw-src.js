@@ -33,7 +33,8 @@ L.drawLocal = {
 				polygon: 'Draw a polygon',
 				rectangle: 'Draw a rectangle',
 				circle: 'Draw a circle',
-				marker: 'Draw a marker'
+				marker: 'Draw a marker',
+				hyperlink: 'Create a hyperlink'
 			}
 		},
 		handlers: {
@@ -66,6 +67,11 @@ L.drawLocal = {
 			rectangle: {
 				tooltip: {
 					start: 'Click and drag to draw rectangle.'
+				}
+			},
+			hyperlink: {
+				tooltip: {
+					start: 'Click and drag to create hyperlink.'
 				}
 			},
 			simpleshape: {
@@ -2965,7 +2971,8 @@ L.DrawToolbar = L.Toolbar.extend({
 		polygon: {},
 		rectangle: {},
 		circle: {},
-		marker: {}
+		marker: {},
+		hyperlink: {},
 	},
 
 	initialize: function (options) {
@@ -3008,6 +3015,11 @@ L.DrawToolbar = L.Toolbar.extend({
 				enabled: this.options.marker,
 				handler: new L.Draw.Marker(map, this.options.marker),
 				title: L.drawLocal.draw.toolbar.buttons.marker
+			},
+			{
+				enabled: this.options.hyperlink,
+				handler: new L.Draw.Hyperlink(map, this.options.hyperlink),
+				title: L.drawLocal.draw.toolbar.buttons.hyperlink,
 			}
 		];
 	},
