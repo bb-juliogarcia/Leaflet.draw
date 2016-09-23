@@ -63,7 +63,7 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 
 	_getTooltipText: function () {
 		return {
-			text: this._endLabelText
+			text: !this.sourceRectangle ? L.drawLocal.draw.handlers.hyperlink.tooltip.start : L.drawLocal.draw.handlers.hyperlink.tooltip.end
 		};
 	},
 
@@ -88,13 +88,21 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 	},
 
 	_onMouseUp: function () {
-		// if (this._shape) {
-		// 	this._fireCreatedEvent();
-		// }
+		if (!this.sourceRectangle) {
+			this.sourceRectangle = new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions);
+			this._fireCreatedEvent(this.sourceRectangle);
+			this._tooltip.updateContent(this._getTooltipText());
+		} else if (!this.destinationRectangle) {
+			this.destinationRectangle = new L.Rectangle(this._shape.getBounds(), this.getShapeOptions());
+			this._fireCreatedEvent(this.destinationRectangle);
+		}
 
 		this.disable();
-		if (this.options.repeatMode) {
+		if (this.options.repeatMode || !this.destinationRectangle) {
 			this.enable();
+		} else {
+			this.sourceRectangle = {};
+			this.destinationRectangle = {};
 		}
 	}
 });
