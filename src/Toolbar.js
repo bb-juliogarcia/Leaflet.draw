@@ -106,7 +106,8 @@ L.Toolbar = L.Class.extend({
 			className: classNamePredix + '-' + type,
 			container: container,
 			callback: this._modes[type].handler.enable,
-			context: this._modes[type].handler
+			context: this._modes[type].handler,
+			drawOptions: this._modes[type].handler.options,
 		});
 
 		this._modes[type].buttonIndex = buttonIndex;
@@ -117,15 +118,15 @@ L.Toolbar = L.Class.extend({
 	},
 
 	_createButton: function (options) {
-		var link = L.DomUtil.create('a', !options.glyphicon && (options.className || '', options.container));
+		var link = L.DomUtil.create('a', !options.drawOptions.glyphicon ? options.className + ' sprite' : '', options.container);
 		link.href = '#';
 
 		if (options.text) {
 			link.innerHTML = options.text;
 		}
 
-		if (options.glyphicon) {
-			link.innerHTML = L.DomUtil.create('span', 'glyphicon ' + options.glyphicon);
+		if (options.drawOptions.glyphicon) {
+			link.innerHTML = '&lt;span class=&quot;glyphicon ' + options.drawOptions.glyphicon + '&quot; /&gt;';
 		}
 
 		if (options.title) {
