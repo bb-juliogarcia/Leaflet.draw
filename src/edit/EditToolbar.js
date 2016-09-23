@@ -1,9 +1,12 @@
-
 /*L.Map.mergeOptions({
- editControl: true
- });*/
+	editControl: true
+});*/
 
 L.EditToolbar = L.Toolbar.extend({
+	statics: {
+		TYPE: 'edit'
+	},
+
 	options: {
 		edit: {
 			selectedPathOptions: {
@@ -18,6 +21,7 @@ L.EditToolbar = L.Toolbar.extend({
 			}
 		},
 		remove: {},
+		poly: null,
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
@@ -27,11 +31,15 @@ L.EditToolbar = L.Toolbar.extend({
 			if (typeof options.edit.selectedPathOptions === 'undefined') {
 				options.edit.selectedPathOptions = this.options.edit.selectedPathOptions;
 			}
-			options.edit = L.extend({}, this.options.edit, options.edit);
+			options.edit.selectedPathOptions = L.extend({}, this.options.edit.selectedPathOptions, options.edit.selectedPathOptions);
 		}
 
 		if (options.remove) {
 			options.remove = L.extend({}, this.options.remove, options.remove);
+		}
+
+		if (options.poly) {
+			options.poly = L.extend({}, this.options.poly, options.poly);
 		}
 
 		this._toolbarClass = 'leaflet-draw-edit';
@@ -47,7 +55,8 @@ L.EditToolbar = L.Toolbar.extend({
 				enabled: this.options.edit,
 				handler: new L.EditToolbar.Edit(map, {
 					featureGroup: featureGroup,
-					selectedPathOptions: this.options.edit.selectedPathOptions
+					selectedPathOptions: this.options.edit.selectedPathOptions,
+					poly : this.options.poly
 				}),
 				title: L.drawLocal.edit.toolbar.buttons.edit
 			},
@@ -104,7 +113,9 @@ L.EditToolbar = L.Toolbar.extend({
 
 	_save: function () {
 		this._activeMode.handler.save();
-		this._activeMode.handler.disable();
+		if (this._activeMode) {
+			this._activeMode.handler.disable();
+		}
 	},
 
 	_checkDisabled: function () {
@@ -124,8 +135,8 @@ L.EditToolbar = L.Toolbar.extend({
 			button.setAttribute(
 				'title',
 				hasLayers ?
-					L.drawLocal.edit.toolbar.buttons.edit
-					: L.drawLocal.edit.toolbar.buttons.editDisabled
+				L.drawLocal.edit.toolbar.buttons.edit
+				: L.drawLocal.edit.toolbar.buttons.editDisabled
 			);
 		}
 
@@ -141,8 +152,8 @@ L.EditToolbar = L.Toolbar.extend({
 			button.setAttribute(
 				'title',
 				hasLayers ?
-					L.drawLocal.edit.toolbar.buttons.remove
-					: L.drawLocal.edit.toolbar.buttons.removeDisabled
+				L.drawLocal.edit.toolbar.buttons.remove
+				: L.drawLocal.edit.toolbar.buttons.removeDisabled
 			);
 		}
 	}
