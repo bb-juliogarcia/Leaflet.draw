@@ -33,7 +33,8 @@ L.drawLocal = {
 				polygon: 'Draw a polygon',
 				rectangle: 'Draw a rectangle',
 				circle: 'Draw a circle',
-				marker: 'Draw a marker'
+				marker: 'Draw a marker',
+				hyperlink: 'Create a hyperlink'
 			}
 		},
 		handlers: {
@@ -66,6 +67,11 @@ L.drawLocal = {
 			rectangle: {
 				tooltip: {
 					start: 'Click and drag to draw rectangle.'
+				}
+			},
+			hyperlink: {
+				tooltip: {
+					start: 'Click and drag to create hyperlink.'
 				}
 			},
 			simpleshape: {
@@ -1128,6 +1134,177 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	_fireCreatedEvent: function () {
 		var marker = new L.Marker.Touch(this._marker.getLatLng(), { icon: this.options.icon });
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
+	}
+});
+
+
+L.HyperlinkHandler = {};
+
+L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
+	options: {
+		repeatMode: false
+	},
+
+	initialize: function (map, options) {
+		this._endLabelText = L.drawLocal.draw.handlers.hyperlink.tooltip.end;
+
+		L.Draw.Feature.prototype.initialize.call(this, map, options);
+	},
+
+	addHooks: function () {
+		L.Draw.Feature.prototype.addHooks.call(this);
+		if (this._map) {
+			this._mapDraggable = this._map.dragging.enabled();
+
+			if (this._mapDraggable) {
+				this._map.dragging.disable();
+			}
+
+			//TODO refactor: move cursor to styles
+			this._container.style.cursor = 'crosshair';
+
+			this._tooltip.updateContent({ text: this._initialLabelText });
+
+			this._map
+				.on('mousedown', this._onMouseDown, this)
+				.on('mousemove', this._onMouseMove, this)
+				.on('touchstart', this._onMouseDown, this)
+				.on('touchmove', this._onMouseMove, this);
+		}
+	},
+
+	removeHooks: function () {
+		L.Draw.Feature.prototype.removeHooks.call(this);
+		if (this._map) {
+			if (this._mapDraggable) {
+				this._map.dragging.enable();
+			}
+
+			//TODO refactor: move cursor to styles
+			this._container.style.cursor = '';
+
+			this._map
+				.off('mousedown', this._onMouseDown, this)
+				.off('mousemove', this._onMouseMove, this)
+				.off('touchstart', this._onMouseDown, this)
+				.off('touchmove', this._onMouseMove, this);
+
+			L.DomEvent.off(document, 'mouseup', this._onMouseUp, this);
+			L.DomEvent.off(document, 'touchend', this._onMouseUp, this);
+
+			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
+			if (this._shape) {
+				this._map.removeLayer(this._shape);
+				delete this._shape;
+			}
+		}
+		this._isDrawing = false;
+	},
+
+	_getTooltipText: function () {
+		return {
+			text: !this.sourceRectangle ? L.drawLocal.draw.handlers.hyperlink.tooltip.start : L.drawLocal.draw.handlers.hyperlink.tooltip.end
+		};
+	},
+
+	_onMouseDown: function (e) {
+		this._isDrawing = true;
+		this._startLatLng = e.latlng;
+
+		L.DomEvent
+			.on(document, 'mouseup', this._onMouseUp, this)
+			.on(document, 'touchend', this._onMouseUp, this)
+			.preventDefault(e.originalEvent);
+	},
+
+	_onMouseMove: function (e) {
+		var latlng = e.latlng;
+
+		this._tooltip.updatePosition(latlng);
+		if (this._isDrawing) {
+			this._tooltip.updateContent(this._getTooltipText());
+			this._drawShape(latlng);
+		}
+	},
+
+	_onMouseUp: function () {
+		if (!this.sourceRectangle) {
+			this.sourceRectangle = new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions);
+			this._fireCreatedEvent(this.sourceRectangle);
+			this._tooltip.updateContent(this._getTooltipText());
+		} else if (!this.destinationRectangle) {
+			this.destinationRectangle = new L.Rectangle(this._shape.getBounds(), this.getShapeOptions());
+			this._fireHyperlinkCreatedEvent(this.sourceRectangle, this.destinationRectangle);
+		}
+
+		this.disable();
+		if (this.options.repeatMode || !this.destinationRectangle) {
+			this.enable();
+		} else {
+			this.sourceRectangle = {};
+			this.destinationRectangle = {};
+		}
+	}
+});
+
+
+L.Draw.Hyperlink = L.Draw.SimpleShape.extend({
+	statics: {
+		TYPE: 'hyperlink'
+	},
+
+	options: {
+		shapeOptions: {
+			stroke: true,
+			color: '#f06eaa',
+			weight: 4,
+			opacity: 0.5,
+			fill: true,
+			fillColor: null, //same as color by default
+			fillOpacity: 0.2,
+			clickable: true
+		},
+		metric: true // Whether to use the metric measurement system or imperial
+	},
+
+	initialize: function (map, options) {
+		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
+		this.type = L.Draw.Hyperlink.TYPE;
+
+		this._initialLabelText = L.drawLocal.draw.handlers.hyperlink.tooltip.start;
+
+		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
+	},
+
+	_drawShape: function (latlng) {
+		if (!this._shape) {
+			this._shape = new L.Rectangle(new L.LatLngBounds(this._startLatLng, latlng), this.options.shapeOptions);
+			this._map.addLayer(this._shape);
+		} else {
+			this._shape.setBounds(new L.LatLngBounds(this._startLatLng, latlng));
+		}
+	},
+
+	_fireCreatedEvent: function () {
+		var rectangle = new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions);
+		L.Draw.SimpleShape.prototype._fireCreatedEvent.call(this, rectangle);
+	},
+
+	_getTooltipText: function () {
+		var tooltipText = L.Draw.SimpleShape.prototype._getTooltipText.call(this),
+			shape = this._shape,
+			latLngs, area, subtext;
+
+		if (shape) {
+			latLngs = this._shape.getLatLngs();
+			area = L.GeometryUtil.geodesicArea(latLngs);
+			subtext = L.GeometryUtil.readableArea(area, this.options.metric);
+		}
+
+		return {
+			text: tooltipText.text,
+			subtext: subtext
+		};
 	}
 });
 
@@ -3026,7 +3203,8 @@ L.DrawToolbar = L.Toolbar.extend({
 		polygon: {},
 		rectangle: {},
 		circle: {},
-		marker: {}
+		marker: {},
+		hyperlink: {},
 	},
 
 	initialize: function (options) {
@@ -3069,6 +3247,11 @@ L.DrawToolbar = L.Toolbar.extend({
 				enabled: this.options.marker,
 				handler: new L.Draw.Marker(map, this.options.marker),
 				title: L.drawLocal.draw.toolbar.buttons.marker
+			},
+			{
+				enabled: this.options.hyperlink,
+				handler: new L.Draw.Hyperlink(map, this.options.hyperlink),
+				title: L.drawLocal.draw.toolbar.buttons.hyperlink,
 			}
 		];
 	},
