@@ -1,4 +1,4 @@
-L.Draw.Hyperlink = L.Draw.SimpleShape.extend({
+L.Draw.Hyperlink = L.Draw.HyperlinkHandler.extend({
 	statics: {
 		TYPE: 'hyperlink'
 	},
