@@ -125,7 +125,7 @@ L.Toolbar = L.Class.extend({
 		}
 
 		if (options.context.options.glyphicon) {
-			link.innerHTML = '&lt;span class=&quot;glyphicon ' + options.context.options.glyphicon  + '&quot; /&gt;';
+			link.innerHTML = '&lt;span class=&quot;glyphicon ' + options.context.options.glyphicon + '&quot;&gt;&lt;/span&gt;';
 		}
 
 		if (options.title) {
