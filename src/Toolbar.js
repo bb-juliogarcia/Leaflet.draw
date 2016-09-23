@@ -117,15 +117,17 @@ L.Toolbar = L.Class.extend({
 	},
 
 	_createButton: function (options) {
-		var link = L.DomUtil.create('a', !options.context.options.glyphicon ? options.className + ' sprite' : '', options.container);
+		var glyphicon = options.context.options.glyphicon;
+		var link = L.DomUtil.create('a', !glyphicon ? options.className + ' sprite' : '', options.container);
 		link.href = '#';
 
 		if (options.text) {
 			link.innerHTML = options.text;
 		}
 
-		if (options.context.options.glyphicon) {
-			link.innerHTML = '&lt;span class=&quot;glyphicon ' + options.context.options.glyphicon + '&quot;&gt;&lt;/span&gt;';
+		if (glyphicon) {
+			var icon = L.DomUtil.create('span', 'glyphicon ' + glyphicon);
+			link.appendChild(icon);
 		}
 
 		if (options.title) {
