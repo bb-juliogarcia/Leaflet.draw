@@ -186,6 +186,13 @@ L.Draw.Feature = L.Handler.extend({
 		this._map.fire('draw:created', { layer: layer, layerType: this.type });
 	},
 
+	_fireHyperlinkCreatedEvent: function (sourceLayer, destinationLayer) {
+		this._map.fire('hyperlink:created', { sourceLayer: sourceLayer, destinationLayer: destinationLayer, layerType: this.type });
+		sourceLayer.on('click', function () {
+			this._map.fire('hyperlink:click', { sourceLayer: sourceLayer, destinationLayer: destinationLayer, layerType: this.type });
+		});
+	},
+
 	// Cancel drawing when the escape key is pressed
 	_cancelDrawing: function (e) {
 		this._map.fire('draw:canceled', { layerType: this.type });
@@ -1227,7 +1234,7 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 			this._tooltip.updateContent(this._getTooltipText());
 		} else if (!this.destinationRectangle) {
 			this.destinationRectangle = new L.Rectangle(this._shape.getBounds(), this.getShapeOptions());
-			this._fireCreatedEvent(this.destinationRectangle);
+			this._fireHyperlinkCreatedEvent(this.sourceRectangle, this.destinationRectangle);
 		}
 
 		this.disable();
@@ -1260,20 +1267,25 @@ L.Draw.Hyperlink = L.Draw.HyperlinkHandler.extend({
 	},
 
 	getShapeOptions: function () {
+		var destinationOptions = {
+			stroke: true,
+			color: '#f06eaa',
+			weight: 1,
+			opacity: 1,
+			fill: true,
+			fillColor: null, //same as color by default
+			fillOpacity: 0,
+			clickable: false
+		};
 		if (!this.sourceRectangle) {
 			return this.options.shapeOptions;
 		}
-		else {
-			return {
-				stroke: true,
-				color: '#f06eaa',
-				weight: 4,
-				opacity: 0,
-				fill: true,
-				fillColor: null, //same as color by default
-				fillOpacity: 0,
-				clickable: false
-			};
+		else if (!this.destinationRectangle) {
+			destinationOptions.dashArray = '5, 5';
+			return destinationOptions;
+		} else {
+			destinationOptions.opacity = 0;
+			return destinationOptions;
 		}
 	},
 
@@ -1316,7 +1328,6 @@ L.Draw.Hyperlink = L.Draw.HyperlinkHandler.extend({
 		};
 	}
 });
-
 
 L.Edit = L.Edit || {};
 

@@ -18,20 +18,25 @@ L.Draw.Hyperlink = L.Draw.HyperlinkHandler.extend({
 	},
 
 	getShapeOptions: function () {
+		var destinationOptions = {
+			stroke: true,
+			color: '#f06eaa',
+			weight: 1,
+			opacity: 1,
+			fill: true,
+			fillColor: null, //same as color by default
+			fillOpacity: 0,
+			clickable: false
+		};
 		if (!this.sourceRectangle) {
 			return this.options.shapeOptions;
 		}
-		else {
-			return {
-				stroke: true,
-				color: '#f06eaa',
-				weight: 4,
-				opacity: 0,
-				fill: true,
-				fillColor: null, //same as color by default
-				fillOpacity: 0,
-				clickable: false
-			};
+		else if (!this.destinationRectangle) {
+			destinationOptions.dashArray = '5, 5';
+			return destinationOptions;
+		} else {
+			destinationOptions.opacity = 0;
+			return destinationOptions;
 		}
 	},
 
