@@ -69,6 +69,10 @@ L.Draw.Feature = L.Handler.extend({
 		this._map.fire('draw:created', { layer: layer, layerType: this.type });
 	},
 
+	_fireHyperlinkSourceCreatedEvent: function (layer) {
+		this._map.fire('hyperlink:sourcecreated', { layer: layer, layerType: this.type });
+	},
+
 	_fireHyperlinkCreatedEvent: function (sourceLayer, destinationLayer) {
 		this._map.fire('hyperlink:created', { sourceLayer: sourceLayer, destinationLayer: destinationLayer, layerType: this.type });
 		sourceLayer.on('click', function () {

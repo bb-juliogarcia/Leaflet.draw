@@ -90,7 +90,7 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 	_onMouseUp: function () {
 		if (!this.sourceRectangle) {
 			this.sourceRectangle = new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions);
-			// this._fireCreatedEvent(this.sourceRectangle);
+			this._fireHyperlinkSourceCreatedEvent(this.sourceRectangle);
 			this._tooltip.updateContent(this._getTooltipText());
 		} else if (!this.destinationRectangle) {
 			this.destinationRectangle = new L.Rectangle(this._shape.getBounds(), this.getShapeOptions());

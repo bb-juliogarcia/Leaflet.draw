@@ -186,6 +186,10 @@ L.Draw.Feature = L.Handler.extend({
 		this._map.fire('draw:created', { layer: layer, layerType: this.type });
 	},
 
+	_fireHyperlinkSourceCreatedEvent: function (layer) {
+		this._map.fire('hyperlink:sourcecreated', { layer: layer, layerType: this.type });
+	},
+
 	_fireHyperlinkCreatedEvent: function (sourceLayer, destinationLayer) {
 		this._map.fire('hyperlink:created', { sourceLayer: sourceLayer, destinationLayer: destinationLayer, layerType: this.type });
 		sourceLayer.on('click', function () {
@@ -1235,7 +1239,7 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 	_onMouseUp: function () {
 		if (!this.sourceRectangle) {
 			this.sourceRectangle = new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions);
-			// this._fireCreatedEvent(this.sourceRectangle);
+			this._fireHyperlinkSourceCreatedEvent(this.sourceRectangle);
 			this._tooltip.updateContent(this._getTooltipText());
 		} else if (!this.destinationRectangle) {
 			this.destinationRectangle = new L.Rectangle(this._shape.getBounds(), this.getShapeOptions());
