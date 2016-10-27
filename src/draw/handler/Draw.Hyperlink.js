@@ -1,4 +1,4 @@
-L.Draw.Hyperlink = L.Draw.SimpleShape.extend({
+L.Draw.Hyperlink = L.Draw.HyperlinkHandler.extend({
 	statics: {
 		TYPE: 'hyperlink'
 	},
@@ -17,6 +17,29 @@ L.Draw.Hyperlink = L.Draw.SimpleShape.extend({
 		metric: true // Whether to use the metric measurement system or imperial
 	},
 
+	getShapeOptions: function () {
+		var destinationOptions = {
+			stroke: true,
+			color: '#f06eaa',
+			weight: 1,
+			opacity: 1,
+			fill: true,
+			fillColor: null, //same as color by default
+			fillOpacity: 0,
+			clickable: false
+		};
+		if (!this.sourceRectangle) {
+			return this.options.shapeOptions;
+		}
+		else if (!this.destinationRectangle) {
+			destinationOptions.dashArray = '5, 5';
+			return destinationOptions;
+		} else {
+			destinationOptions.opacity = 0;
+			return destinationOptions;
+		}
+	},
+
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Hyperlink.TYPE;
@@ -28,20 +51,19 @@ L.Draw.Hyperlink = L.Draw.SimpleShape.extend({
 
 	_drawShape: function (latlng) {
 		if (!this._shape) {
-			this._shape = new L.Rectangle(new L.LatLngBounds(this._startLatLng, latlng), this.options.shapeOptions);
+			this._shape = new L.Rectangle(new L.LatLngBounds(this._startLatLng, latlng), this.getShapeOptions());
 			this._map.addLayer(this._shape);
 		} else {
 			this._shape.setBounds(new L.LatLngBounds(this._startLatLng, latlng));
 		}
 	},
 
-	_fireCreatedEvent: function () {
-		var rectangle = new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions);
-		L.Draw.SimpleShape.prototype._fireCreatedEvent.call(this, rectangle);
+	_fireCreatedEvent: function (rectangle) {
+		L.Draw.HyperlinkHandler.prototype._fireCreatedEvent.call(this, rectangle);
 	},
 
 	_getTooltipText: function () {
-		var tooltipText = L.Draw.SimpleShape.prototype._getTooltipText.call(this),
+		var tooltipText = L.Draw.HyperlinkHandler.prototype._getTooltipText.call(this),
 			shape = this._shape,
 			latLngs, area, subtext;
 
