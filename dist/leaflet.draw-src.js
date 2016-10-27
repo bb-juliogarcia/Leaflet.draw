@@ -5,15 +5,7 @@
 	https://github.com/Leaflet/Leaflet.draw
 	http://leafletjs.com
 */
-<<<<<<< HEAD
-(function (window, document, undefined) {/*
- * Leaflet.draw assumes that you have already included the Leaflet library.
- */
-
-L.drawVersion = '0.4.0';
-=======
-(function (window, document, undefined) {L.drawVersion = '0.3.0-dev';
->>>>>>> 4fd76f250e60c3f989e91585a064e295a942bdfb
+(function (window, document, undefined) {L.drawVersion = '0.4.0';
 
 L.drawLocal = {
 	draw: {
@@ -75,12 +67,8 @@ L.drawLocal = {
 			},
 			hyperlink: {
 				tooltip: {
-<<<<<<< HEAD
-					start: 'Click and drag to create hyperlink.'
-=======
 					start: 'Click and drag to create the source for the hyperlink.',
 					end: 'Click and drag to create the desired hyperlink destination.',
->>>>>>> 4fd76f250e60c3f989e91585a064e295a942bdfb
 				}
 			},
 			simpleshape: {
@@ -126,12 +114,8 @@ L.drawLocal = {
 };
 
 
-<<<<<<< HEAD
-L.Draw = L.Draw || {};
-=======
 
-L.Draw = {};
->>>>>>> 4fd76f250e60c3f989e91585a064e295a942bdfb
+L.Draw = L.Draw || {};
 
 L.Draw.Feature = L.Handler.extend({
 	includes: L.Mixin.Events,
@@ -1268,10 +1252,6 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 	}
 });
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 4fd76f250e60c3f989e91585a064e295a942bdfb
 L.Draw.Hyperlink = L.Draw.HyperlinkHandler.extend({
 	statics: {
 		TYPE: 'hyperlink'
@@ -1354,10 +1334,6 @@ L.Draw.Hyperlink = L.Draw.HyperlinkHandler.extend({
 	}
 });
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 4fd76f250e60c3f989e91585a064e295a942bdfb
 L.Edit = L.Edit || {};
 
 L.Edit.Marker = L.Handler.extend({
