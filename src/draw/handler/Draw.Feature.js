@@ -69,6 +69,13 @@ L.Draw.Feature = L.Handler.extend({
 		this._map.fire('draw:created', { layer: layer, layerType: this.type });
 	},
 
+	_fireHyperlinkCreatedEvent: function (sourceLayer, destinationLayer) {
+		this._map.fire('hyperlink:created', { sourceLayer: sourceLayer, destinationLayer: destinationLayer, layerType: this.type });
+		sourceLayer.on('click', function () {
+			this._map.fire('hyperlink:click', { sourceLayer: sourceLayer, destinationLayer: destinationLayer, layerType: this.type });
+		});
+	},
+
 	// Cancel drawing when the escape key is pressed
 	_cancelDrawing: function (e) {
 		this._map.fire('draw:canceled', { layerType: this.type });

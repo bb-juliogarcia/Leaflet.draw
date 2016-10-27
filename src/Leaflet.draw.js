@@ -1,7 +1,3 @@
-/*
- * Leaflet.draw assumes that you have already included the Leaflet library.
- */
-
 L.drawVersion = '0.4.0';
 
 L.drawLocal = {
@@ -64,7 +60,8 @@ L.drawLocal = {
 			},
 			hyperlink: {
 				tooltip: {
-					start: 'Click and drag to create hyperlink.'
+					start: 'Click and drag to create the source for the hyperlink.',
+					end: 'Click and drag to create the desired hyperlink destination.',
 				}
 			},
 			simpleshape: {
@@ -108,3 +105,4 @@ L.drawLocal = {
 		}
 	}
 };
+
