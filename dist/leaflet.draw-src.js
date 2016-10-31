@@ -1261,6 +1261,7 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 			this.setDestination(L.Rectangle(this._shape.getBounds(), this.getShapeOptions()));
 		}
 
+		console.log(this.sourceRectangle, this.destinationRectangle);
 		this.disable();
 		if (this.options.repeatMode || !this.destinationRectangle) {
 			this.enable();
