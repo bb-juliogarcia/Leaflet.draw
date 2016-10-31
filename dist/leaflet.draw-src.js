@@ -1267,8 +1267,8 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 		if (this.options.repeatMode || !this.destinationRectangle) {
 			this.enable();
 		} else {
-			this.sourceRectangle = {};
-			this.destinationRectangle = {};
+			this.sourceRectangle = null;
+			this.destinationRectangle = null;
 		}
 	}
 });
