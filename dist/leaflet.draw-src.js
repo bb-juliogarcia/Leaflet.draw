@@ -1261,6 +1261,7 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 			this.setSource(L.Rectangle(this._shape.getBounds(), this.options.shapeOptions));
 			this._tooltip.updateContent(this._getTooltipText());
 		} else if (!this.destinationRectangle) {
+			console.log('ON_MOUSE_UP: destinationRectangle', this._shape, this.getShapeOptions());
 			this.setDestination(L.Rectangle(this._shape.getBounds(), this.getShapeOptions()));
 		}
 
