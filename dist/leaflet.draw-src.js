@@ -1245,11 +1245,13 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 
 	setSource: function (source) {
 		this.sourceRectangle = source;
+		console.log('setSource', this.sourceRectangle, this.destinationRectangle);
 		this._fireHyperlinkSourceCreatedEvent(this.sourceRectangle);
 	},
 
 	setDestination: function (destination) {
 		this.destinationRectangle = destination;
+		console.log('setDestination', this.sourceRectangle, this.destinationRectangle);
 		this._fireHyperlinkCreatedEvent(this.sourceRectangle, this.destinationRectangle);
 	},
 
@@ -1261,7 +1263,7 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 			this.setDestination(L.Rectangle(this._shape.getBounds(), this.getShapeOptions()));
 		}
 
-		console.log(this.sourceRectangle, this.destinationRectangle);
+		console.log('ON_MOUSE_UP', this.sourceRectangle, this.destinationRectangle);
 		this.disable();
 		if (this.options.repeatMode || !this.destinationRectangle) {
 			this.enable();
