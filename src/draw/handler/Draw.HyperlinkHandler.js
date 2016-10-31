@@ -5,11 +5,8 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 		repeatMode: false,
 	},
 
-	initialize: function (map, options, source) {
+	initialize: function (map, options) {
 		this._endLabelText = L.drawLocal.draw.handlers.hyperlink.tooltip.end;
-		if (source) {
-			this.sourceRectangle = source;
-		}
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 
@@ -89,14 +86,30 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 		}
 	},
 
+	getSource: function () {
+		return this.sourceRectangle;
+	},
+
+	getDestination: function () {
+		return this.destinationRectangle;
+	},
+
+	setSource: function (source) {
+		this.sourceRectangle = source;
+		this._fireHyperlinkSourceCreatedEvent(this.sourceRectangle);
+	},
+
+	setDestination: function (destination) {
+		this.destinationRectangle = destination;
+		this._fireHyperlinkCreatedEvent(this.sourceRectangle, this.destinationRectangle);
+	},
+
 	_onMouseUp: function () {
 		if (!this.sourceRectangle) {
-			this.sourceRectangle = new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions);
-			this._fireHyperlinkSourceCreatedEvent(this.sourceRectangle);
+			this.setSource(L.Rectangle(this._shape.getBounds(), this.options.shapeOptions));
 			this._tooltip.updateContent(this._getTooltipText());
 		} else if (!this.destinationRectangle) {
-			this.destinationRectangle = new L.Rectangle(this._shape.getBounds(), this.getShapeOptions());
-			this._fireHyperlinkCreatedEvent(this.sourceRectangle, this.destinationRectangle);
+			this.setDestination(L.Rectangle(this._shape.getBounds(), this.getShapeOptions()));
 		}
 
 		this.disable();
