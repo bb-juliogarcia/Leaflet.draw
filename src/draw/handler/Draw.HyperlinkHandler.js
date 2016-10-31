@@ -2,12 +2,14 @@ L.HyperlinkHandler = {};
 
 L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 	options: {
-		repeatMode: false
+		repeatMode: false,
 	},
 
-	initialize: function (map, options) {
+	initialize: function (map, options, source) {
 		this._endLabelText = L.drawLocal.draw.handlers.hyperlink.tooltip.end;
-
+		if (source) {
+			this.sourceRectangle = source;
+		}
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 
