@@ -96,13 +96,12 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 
 	setSource: function (source) {
 		this.sourceRectangle = source;
-		console.log('setSource', this.sourceRectangle, this.destinationRectangle);
+		this._tooltip.updateContent(this._getTooltipText());
 		this._fireHyperlinkSourceCreatedEvent(this.sourceRectangle);
 	},
 
 	setDestination: function (destination) {
 		this.destinationRectangle = destination;
-		console.log('setDestination', this.sourceRectangle, this.destinationRectangle);
 		this._fireHyperlinkCreatedEvent(this.sourceRectangle, this.destinationRectangle);
 	},
 
