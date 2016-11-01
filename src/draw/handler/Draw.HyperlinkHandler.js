@@ -6,7 +6,6 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 	},
 
 	initialize: function (map, options) {
-		this._endLabelText = L.drawLocal.draw.handlers.hyperlink.tooltip.end;
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 

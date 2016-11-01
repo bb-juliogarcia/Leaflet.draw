@@ -44,7 +44,7 @@ L.Draw.Hyperlink = L.Draw.HyperlinkHandler.extend({
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Hyperlink.TYPE;
 
-		this._initialLabelText = L.drawLocal.draw.handlers.hyperlink.tooltip.start;
+		this._initialLabelText = this._getTooltipText().text;
 
 		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
 	},
