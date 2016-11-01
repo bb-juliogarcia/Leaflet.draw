@@ -1170,7 +1170,7 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
 
-			this._tooltip.updateContent({ text: this._initialLabelText });
+			this._tooltip.updateContent(this._getTooltipText());
 
 			this._map
 				.on('mousedown', this._onMouseDown, this)
@@ -1244,7 +1244,6 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 
 	setSource: function (source) {
 		this.sourceRectangle = source;
-		this._tooltip.updateContent(this._getTooltipText());
 		this._fireHyperlinkSourceCreatedEvent(this.sourceRectangle);
 	},
 
@@ -1256,7 +1255,6 @@ L.Draw.HyperlinkHandler = L.Draw.Feature.extend({
 	_onMouseUp: function () {
 		if (!this.sourceRectangle) {
 			this.setSource(new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions));
-			this._tooltip.updateContent(this._getTooltipText());
 		} else if (!this.destinationRectangle) {
 			this.setDestination(new L.Rectangle(this._shape.getBounds(), this.getShapeOptions()));
 		}
@@ -1312,13 +1310,13 @@ L.Draw.Hyperlink = L.Draw.HyperlinkHandler.extend({
 			return destinationOptions;
 		}
 	},
-
+	
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Hyperlink.TYPE;
-
+		
 		this._initialLabelText = this._getTooltipText().text;
-
+		
 		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
 	},
 
